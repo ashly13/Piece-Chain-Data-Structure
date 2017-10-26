@@ -16,7 +16,7 @@ import java.util.*; // For ArrayList and LinkedList
  * 
  * Physical buffer = ArrayList used to store the text sequences
  * Logical buffer  = The actual order in which text must appear (maintained
- *      by the piece chain.
+ *      by the piece chain)
  * 
  * @author Ashwitha Yadav T
  * @since October 26, 2017
@@ -27,19 +27,25 @@ public class PieceChain {
     private final List<Piece> sequence;
     private final List<Character> buffer;
     
+    /**
+     * Default Constructor
+     */
     public PieceChain(){
         sequence = new LinkedList<>();
         buffer = new ArrayList<>();
     }
     
     /**
+     * Inserts the character sequence at the specified offset
      * 
-     * @param textOffset offset into the text and not the buffer
+     * @param textOffset offset into the logical buffer where insertion
+     *                      will happen
      * @param buf text to insert into the buffer
      */
     public void insert(int textOffset, char [] buf){
         
-        if ( textOffset < 0 ){
+        // Offset cannot be before the beginning or after the end
+        if ( textOffset < 0 || textOffset > buffer.size() ){
             return;
         }
         
@@ -55,7 +61,8 @@ public class PieceChain {
         Piece newPiece = new Piece(offset, length);
         
         // Find the piece that contains the offset provided
-        // Traverse the linked list
+        // by traversing the linked list
+        // The only "inefficient" part of a piece chain
         ListIterator<Piece> sequenceIterator = sequence.listIterator();
         
         // Check if the piece chain is empty
@@ -76,15 +83,19 @@ public class PieceChain {
             currTextOffset += piece.getLength();
             
             if ( textOffset == (currTextOffset - piece.getLength()) ){
-                // The text to be inserted is in the beginning of the current piece
+                // The text to be inserted is in the beginning of the 
+                // current piece
                 sequenceIterator.previous();
                 sequenceIterator.add(newPiece);
                 break;
             }
             else if ( textOffset < currTextOffset ){
-                // The text to be inserted is in the middle of the current piece
-                prevPiece = new Piece(piece.getOffset(), textOffset - ( currTextOffset - piece.getLength() ));
-                nextPiece = new Piece(piece.getOffset() + prevPiece.getLength(), piece.getLength() - prevPiece.getLength());
+                // The text to be inserted is in the middle of the 
+                // current piece
+                prevPiece = new Piece(piece.getOffset(), 
+                        textOffset - ( currTextOffset - piece.getLength() ));
+                nextPiece = new Piece(piece.getOffset() + prevPiece.getLength()
+                        , piece.getLength() - prevPiece.getLength());
                 sequenceIterator.remove();
                 sequenceIterator.add(prevPiece);
                 sequenceIterator.add(newPiece);
@@ -100,6 +111,13 @@ public class PieceChain {
         
     }
     
+    /**
+     * Deletes the character sequence at the specified offset
+     * of the given length
+     * 
+     * @param textOffset offset into the logical buffer
+     * @param length length of text to be deleted
+     */
     public void delete(int textOffset, int length){
         // Find the piece(s) that contains the offset provided
         // Traverse the linked list
@@ -111,8 +129,7 @@ public class PieceChain {
         }
         
         // Deleting may involve splitting the current piece
-        Piece prevPiece = null, nextPiece = null;
-        Piece piece = null;
+        Piece prevPiece, nextPiece, piece;
         
         int currTextOffset = 0;
         
@@ -120,13 +137,16 @@ public class PieceChain {
             piece = sequenceIterator.next();
             currTextOffset += piece.getLength();
             
-            // Make the text to be deleted always start from the beginning of a piece
-            
-            if ( textOffset > (currTextOffset - piece.getLength()) && textOffset < currTextOffset ){
-                // The text to be deleted starts from the middle of the current piece
-                // Transform it so it starts from the beginning
-                prevPiece = new Piece(piece.getOffset(), textOffset - ( currTextOffset - piece.getLength() ));
-                nextPiece = new Piece(piece.getOffset() + prevPiece.getLength(), piece.getLength() - prevPiece.getLength());
+            // Make the text to be deleted always start from the beginning 
+            // of a piece
+            if ( textOffset > (currTextOffset - piece.getLength()) 
+                    && textOffset < currTextOffset ){
+                // The text to be deleted starts from the middle of the 
+                // current piece
+                prevPiece = new Piece(piece.getOffset(), 
+                        textOffset - ( currTextOffset - piece.getLength() ));
+                nextPiece = new Piece(piece.getOffset() + prevPiece.getLength()
+                        , piece.getLength() - prevPiece.getLength());
                 
                 // Remove the current piece and replace it with the new piece
                 sequenceIterator.remove();
@@ -135,12 +155,14 @@ public class PieceChain {
             }
             
             // Make the text to be deleted always stop at the end of a piece
-            if ( ( textOffset + length ) < currTextOffset && ( textOffset + length) > ( currTextOffset - piece.getLength() ) ){
-                // The text to be deleted stops at the middle of the current piece
-                
-                // Transform it so it stops at the end
-                prevPiece = new Piece(piece.getOffset(), ( textOffset + length ) - ( currTextOffset - piece.getLength() ));
-                nextPiece = new Piece(piece.getOffset() + prevPiece.getLength(), piece.getLength() - prevPiece.getLength());
+            if ( ( textOffset + length ) < currTextOffset && 
+                (textOffset + length) > (currTextOffset - piece.getLength())){
+                // The text to be deleted stops at the middle of the 
+                // current piece
+                prevPiece = new Piece(piece.getOffset(), 
+                    (textOffset + length) - (currTextOffset - piece.getLength()));
+                nextPiece = new Piece(piece.getOffset() + prevPiece.getLength()
+                        , piece.getLength() - prevPiece.getLength());
                 
                 // Remove the current piece and replace it with the new pieces
                 
@@ -165,15 +187,20 @@ public class PieceChain {
         while ( sequenceIterator.hasNext() ){
             piece = sequenceIterator.next();
             currTextOffset += piece.getLength();
-            if ( ( currTextOffset - piece.getLength() ) == textOffset ){    // Starting piece
+            if ( ( currTextOffset - piece.getLength() ) == textOffset ){    
+                // Starting piece
                 sequenceIterator.remove();
             }
-            else if( ( currTextOffset - piece.getLength() ) > textOffset && currTextOffset < ( textOffset + length ) ){
+            else if( ( currTextOffset - piece.getLength() ) > textOffset 
+                    && currTextOffset < ( textOffset + length ) ){
                 // Middle piece
                 sequenceIterator.remove();
             }
-            else if( currTextOffset == ( textOffset + length ) ){ // End piece
+            else if( currTextOffset == ( textOffset + length ) ){ 
+                // End piece
                 sequenceIterator.remove();
+                // No more pieces to be removed from piece chain
+                // So break for more efficiency
                 break;
             }
         }
@@ -187,7 +214,8 @@ public class PieceChain {
         List sub;
         while ( sequenceIterator.hasNext() ){
             piece = sequenceIterator.next();
-            sub = buffer.subList(piece.getOffset(), piece.getOffset() + piece.getLength());
+            sub = buffer.subList(piece.getOffset(), 
+                    piece.getOffset() + piece.getLength());
             System.out.println(sub);
         }
         return result;

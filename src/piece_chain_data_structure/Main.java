@@ -1,13 +1,10 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package piece_chain_data_structure;
 
 /**
  *
  * @author Ashwitha Yadav T
+ * @since October 26
+ * @version 1.0
  */
 public class Main {
 
@@ -22,11 +19,11 @@ public class Main {
         pc.insert(0, " (English) ".toCharArray());
         pc.insert(29, " My bad!".toCharArray());
         pc.insert(36, ", truly".toCharArray());
-        System.out.println("The text stored in the piece chain before deleting : \n");
+        System.out.println("The Piece Chain before deleting : \n");
         System.out.println(pc);
         System.out.println("\n\n");
-        pc.delete(1, 1);
-        System.out.println("The text stored in the piece chain after deleting : \n");
+        pc.delete(2, 3);
+        System.out.println("The Piece Chain after deleting : \n");
         System.out.println(pc);
         System.out.println("\n\n");
     }
