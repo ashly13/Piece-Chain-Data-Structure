@@ -216,7 +216,7 @@ public class PieceChain {
             piece = sequenceIterator.next();
             sub = buffer.subList(piece.getOffset(), 
                     piece.getOffset() + piece.getLength());
-            System.out.println(sub);
+            System.out.println("\t" + sub);
         }
         return result;
     }

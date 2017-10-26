@@ -12,19 +12,47 @@ public class Main {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
+        demonstrate();
+    }
+    
+    /**
+     * Demonstrate insertion and deletion in a piece chain
+     */
+    public static void demonstrate(){
         PieceChain pc = new PieceChain();
-        pc.insert(0, "A span of text.".toCharArray());
-        pc.insert(2, "large ".toCharArray());
-        pc.insert(8, "English ".toCharArray());
-        pc.insert(0, " (English) ".toCharArray());
-        pc.insert(29, " My bad!".toCharArray());
-        pc.insert(36, ", truly".toCharArray());
-        System.out.println("The Piece Chain before deleting : \n");
+        System.out.println("A demonstation of Piece Chain Data Structure");
+        System.out.println("\n------------------Insertion------------------");
+        
+        System.out.println("\n");
+        
+        // Insertion when piece chain is empty
+        String buffer = "A span of text.";
+        int pos = 0;
+        System.out.println("After inserting '" + buffer + "' at position " + pos);
+        pc.insert(pos, buffer.toCharArray());
         System.out.println(pc);
-        System.out.println("\n\n");
-        pc.delete(2, 3);
-        System.out.println("The Piece Chain after deleting : \n");
+        
+        // Insertion in the middle of a piece
+        buffer = "large ";
+        pos = 2;
+        System.out.println("After inserting '" + buffer + "' at position " + pos);
+        pc.insert(pos, buffer.toCharArray());
         System.out.println(pc);
+        
+        // Insertion at the end of a piece
+        buffer = "English ";
+        pos = 8;
+        System.out.println("After inserting '" + buffer + "' at position " + pos);
+        pc.insert(pos, buffer.toCharArray());
+        System.out.println(pc);
+        
+        // Insertion at the beginning of a piece
+        buffer = "(or French) ";
+        pos = 16;
+        System.out.println("After inserting '" + buffer + "' at position " + pos);
+        pc.insert(pos, buffer.toCharArray());
+        System.out.println(pc);
+        
         System.out.println("\n\n");
     }
     
