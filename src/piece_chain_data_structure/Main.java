@@ -16,15 +16,17 @@ public class Main {
      */
     public static void main(String[] args) {
         PieceChain pc = new PieceChain();
-        char [] buffer = "A span of text.".toCharArray();
-        pc.insert(0, buffer);
-        buffer = "large ".toCharArray();
-        pc.insert(2, buffer);
-        buffer = "English ".toCharArray();
-        pc.insert(8, buffer);
-        buffer = " My bad!".toCharArray();
-        pc.insert(29, buffer);
-        System.out.println("The text stored in the piece chain : \n");
+        pc.insert(0, "A span of text.".toCharArray());
+        pc.insert(2, "large ".toCharArray());
+        pc.insert(8, "English ".toCharArray());
+        pc.insert(0, " (English) ".toCharArray());
+        pc.insert(29, " My bad!".toCharArray());
+        pc.insert(36, ", truly".toCharArray());
+        System.out.println("The text stored in the piece chain before deleting : \n");
+        System.out.println(pc);
+        System.out.println("\n\n");
+        pc.delete(1, 1);
+        System.out.println("The text stored in the piece chain after deleting : \n");
         System.out.println(pc);
         System.out.println("\n\n");
     }
