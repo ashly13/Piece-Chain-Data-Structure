@@ -1,5 +1,8 @@
 package piece_chain_data_structure;
 
+import java.util.List;
+import java.util.ArrayList;
+
 /**
  *
  * @author Ashwitha Yadav T
@@ -12,7 +15,8 @@ public class Main {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-        demonstrate();
+        //demonstrate();
+        measurePerformance(10000);
     }
     
     /**
@@ -82,6 +86,53 @@ public class Main {
         System.out.println(pc);
         
         System.out.println("\n\n");
+    }
+    
+    /**
+     * 
+     * @param number number of times to execute insertion and deletion 
+     */
+    public static void measurePerformance(int number){
+        
+        System.out.println("\n\n---------------Performance Comparison of" + 
+        " Piece Chain vs. ArrayList---------------\n");
+        
+        PieceChain pc = new PieceChain();
+        List<Character> sequence = new ArrayList<>();
+        char [][] text = { "A ".toCharArray(), "large".toCharArray(), "span ".toCharArray(), "of ".toCharArray(), "text. ".toCharArray() };
+        int size = text.length;
+        long startTime, endTime;
+        
+        // Insertion
+        System.out.println("\nInsertion Comparison");
+        
+        // Insert into the piece chain
+        startTime = System.currentTimeMillis();
+        for ( int i = 0 ; i < number ; i++ ){
+            pc.insert(i%size, text[i%size]);
+        }
+        endTime = System.currentTimeMillis();
+        System.out.println("\n" + number + " insertions into the piece chain "
+                + "took " + (endTime-startTime) + " milliseconds");
+        //System.out.println(pc);
+        
+        
+        // Insert into the ArrayList for a comparison
+        startTime = System.currentTimeMillis();
+        for ( int i = 0 ; i < number ; i++ ){
+            int j = i%size ;
+            for ( char c : text[i%size] ){
+                sequence.add(j, c);
+                j++;
+            }
+        }
+        endTime = System.currentTimeMillis();
+        System.out.println("\n" + number + " insertions into the ArrayList "
+                + "took " + (endTime-startTime) + " milliseconds");
+        //System.out.println(sequence);
+        
+        System.out.println("\n");
+        
     }
     
 }
