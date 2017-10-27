@@ -132,78 +132,114 @@ public class PieceChain {
         Piece prevPiece, nextPiece, piece;
         
         int currTextOffset = 0;
+        int oldLength;
         
         while ( sequenceIterator.hasNext() ){
             piece = sequenceIterator.next();
             currTextOffset += piece.getLength();
             
-            // Make the text to be deleted always start from the beginning 
-            // of a piece
-            if ( textOffset > (currTextOffset - piece.getLength()) 
-                    && textOffset < currTextOffset ){
+            if ( textOffset == (currTextOffset - piece.getLength()) ){
+                // The text to be deleted starts from the beginning of the 
+                // current piece - Done
+                
+                // See if it stops in this piece itself
+                if ( ( textOffset + length ) > currTextOffset ){    // Done
+                    // The sequence does not stops in this piece
+                    // So it can be deleted
+                    sequenceIterator.remove();
+                }
+                else if( ( textOffset + length ) == currTextOffset ){   // Done
+                    // The sequence stops at the end of this piece
+                    // So it can be deleted
+                    sequenceIterator.remove();
+                    // End of sequence, break for more efficiency
+                    break;
+                }
+                else{   // Done
+                    // The sequence stops at the middle of this piece
+                    // So it must be split and then deleted
+                    oldLength = piece.getLength();
+                    piece.setLength((textOffset + length) - (currTextOffset - piece.getLength()));
+                    sequenceIterator.remove();
+                    nextPiece = new Piece(piece.getOffset() + piece.getLength()
+                            , oldLength - piece.getLength());
+                    
+                    sequenceIterator.add(nextPiece);
+                    // End of sequence, break for more efficiency
+                    break;
+                }
+            }
+            else if ( textOffset > (currTextOffset - piece.getLength()) &&
+                    textOffset < currTextOffset ){
                 // The text to be deleted starts from the middle of the 
-                // current piece
-                prevPiece = new Piece(piece.getOffset(), 
-                        textOffset - ( currTextOffset - piece.getLength() ));
-                nextPiece = new Piece(piece.getOffset() + prevPiece.getLength()
-                        , piece.getLength() - prevPiece.getLength());
+                // current piece - Done
                 
-                // Remove the current piece and replace it with the new piece
-                sequenceIterator.remove();
-                sequenceIterator.add(prevPiece);
+                // Split the current piece
+                oldLength = piece.getLength();
+                piece.setLength(textOffset - ( currTextOffset - piece.getLength() ));
+                nextPiece = new Piece(piece.getOffset() + piece.getLength()
+                        , oldLength - piece.getLength());
+                
                 sequenceIterator.add(nextPiece);
+                piece = sequenceIterator.previous();
+                
+                // See if it stops in this piece itself
+                if ( ( textOffset + length ) > currTextOffset ){    // Done
+                    // The sequence does not stops in this piece
+                    // So it can be deleted
+                    sequenceIterator.remove();
+                }
+                else if( ( textOffset + length ) == currTextOffset ){   // Done
+                    // The sequence stops at the end of this piece
+                    // So it can be deleted
+                    sequenceIterator.remove();
+                    // End of sequence, break for more efficiency
+                    break;
+                }
+                else{   // Done
+                    // The sequence stops at the middle of this piece
+                    // So it must be split and then deleted
+                    oldLength = piece.getLength();
+                    piece.setLength((textOffset + length) - (currTextOffset - piece.getLength()));
+                    sequenceIterator.remove();
+                    nextPiece = new Piece(piece.getOffset() + piece.getLength()
+                            , oldLength - piece.getLength());
+                    
+                    sequenceIterator.add(nextPiece);
+                    // End of sequence, break for more efficiency
+                    break;
+                }
             }
-            
-            // Make the text to be deleted always stop at the end of a piece
-            if ( ( textOffset + length ) < currTextOffset && 
-                (textOffset + length) > (currTextOffset - piece.getLength())){
-                // The text to be deleted stops at the middle of the 
-                // current piece
-                prevPiece = new Piece(piece.getOffset(), 
-                    (textOffset + length) - (currTextOffset - piece.getLength()));
-                nextPiece = new Piece(piece.getOffset() + prevPiece.getLength()
-                        , piece.getLength() - prevPiece.getLength());
-                
-                // Remove the current piece and replace it with the new pieces
-                
-                // The following two lines are used to prevent an 
-                // IllegalStateException which occurs after successive
-                // adds or removes without an intermediate call to
-                // next() or previous()
-                sequenceIterator.previous();
-                sequenceIterator.next();
-                
+            else if( (currTextOffset - piece.getLength()) > textOffset
+                    && currTextOffset < ( textOffset + length )){
+                // The current piece is between start and stop of the sequence
+                // Done
                 sequenceIterator.remove();
-                sequenceIterator.add(prevPiece);
+            }
+            else if ( (currTextOffset - piece.getLength()) > textOffset
+                    && currTextOffset > ( textOffset + length ) ){
+                // The sequence stops in the middle of the 
+                // current piece - Done
+                oldLength = piece.getLength();
+                piece.setLength((textOffset + length) - (currTextOffset - piece.getLength()));
+                sequenceIterator.remove();
+                nextPiece = new Piece(piece.getOffset() + piece.getLength()
+                        , oldLength - piece.getLength());
+
                 sequenceIterator.add(nextPiece);
+                // End of sequence, break for more efficiency
+                break;
+            }
+            else if ( (currTextOffset - piece.getLength()) > textOffset
+                    && currTextOffset == ( textOffset + length ) ){
+                // The sequence stops at the end of the 
+                // current piece - Done
+                sequenceIterator.remove();
+                // End of sequence, break for more efficiency
                 break;
             }
         }
         
-        // Traverse the linked list again to remove all required pieces
-        sequenceIterator = sequence.listIterator();
-        currTextOffset = 0;
-        
-        while ( sequenceIterator.hasNext() ){
-            piece = sequenceIterator.next();
-            currTextOffset += piece.getLength();
-            if ( ( currTextOffset - piece.getLength() ) == textOffset ){    
-                // Starting piece
-                sequenceIterator.remove();
-            }
-            else if( ( currTextOffset - piece.getLength() ) > textOffset 
-                    && currTextOffset < ( textOffset + length ) ){
-                // Middle piece
-                sequenceIterator.remove();
-            }
-            else if( currTextOffset == ( textOffset + length ) ){ 
-                // End piece
-                sequenceIterator.remove();
-                // No more pieces to be removed from piece chain
-                // So break for more efficiency
-                break;
-            }
-        }
     }
     
     @Override

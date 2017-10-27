@@ -131,6 +131,30 @@ public class Main {
                 + "took " + (endTime-startTime) + " milliseconds");
         //System.out.println(sequence);
         
+        // Deletion
+        System.out.println("\n\nDeletion Comparison");
+        
+        // Delete from the piece chain
+        startTime = System.currentTimeMillis();
+        for ( int i = 0 ; i < number ; i++ ){
+            pc.delete(i%size, i%size);
+        }
+        endTime = System.currentTimeMillis();
+        System.out.println("\n" + number + " deletions from the piece chain "
+                + "took " + (endTime-startTime) + " milliseconds");
+        //System.out.println(pc);
+        
+        
+        // Delete from the ArrayList for a comparison
+        startTime = System.currentTimeMillis();
+        for ( int i = 0 ; i < number ; i++ ){
+            sequence.remove(i%size);
+        }
+        endTime = System.currentTimeMillis();
+        System.out.println("\n" + number + " deletions from the ArrayList "
+                + "took " + (endTime-startTime) + " milliseconds");
+        //System.out.println(sequence);
+        
         System.out.println("\n");
         
     }
