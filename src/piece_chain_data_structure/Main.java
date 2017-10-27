@@ -16,7 +16,7 @@ public class Main {
      */
     public static void main(String[] args) {
         //demonstrate();
-        measurePerformance(10000);
+        measurePerformance(30000);
     }
     
     /**

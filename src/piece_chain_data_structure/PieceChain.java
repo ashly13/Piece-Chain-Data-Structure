@@ -92,12 +92,9 @@ public class PieceChain {
             else if ( textOffset < currTextOffset ){
                 // The text to be inserted is in the middle of the 
                 // current piece
-                prevPiece = new Piece(piece.getOffset(), 
-                        textOffset - ( currTextOffset - piece.getLength() ));
-                nextPiece = new Piece(piece.getOffset() + prevPiece.getLength()
-                        , piece.getLength() - prevPiece.getLength());
-                sequenceIterator.remove();
-                sequenceIterator.add(prevPiece);
+                piece.setLength(textOffset - ( currTextOffset - piece.getLength() ));
+                nextPiece = new Piece(piece.getOffset() + piece.getLength()
+                        , piece.getLength() - piece.getLength());
                 sequenceIterator.add(newPiece);
                 sequenceIterator.add(nextPiece);
                 break;
