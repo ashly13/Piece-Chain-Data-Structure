@@ -15,8 +15,8 @@ public class Main {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-        //demonstrate();
-        measurePerformance(30000);
+        demonstrate();
+        //measurePerformance(30000);
     }
     
     /**
@@ -66,14 +66,14 @@ public class Main {
         // Deletion when sequence begins and ends in the middle of a piece
         int off = 11;
         int len = 5;
-        System.out.println("After deleting from position " + off + " to position " + (off + len));
+        System.out.println("After deleting from position " + off + " to position " + (off + len - 1));
         pc.delete(off, len);
         System.out.println(pc);
         
         // Deletion when sequence begins in a piece and ends in another piece
         off = 1;
         len = 6;
-        System.out.println("After deleting from position " + off + " to position " + (off + len));
+        System.out.println("After deleting from position " + off + " to position " + (off + len - 1));
         pc.delete(off, len);
         System.out.println(pc);
         
@@ -81,7 +81,7 @@ public class Main {
         // at the end of the same piece
         off = 2;
         len = 3;
-        System.out.println("After deleting from position " + off + " to position " + (off + len));
+        System.out.println("After deleting from position " + off + " to position " + (off + len - 1));
         pc.delete(off, len);
         System.out.println(pc);
         

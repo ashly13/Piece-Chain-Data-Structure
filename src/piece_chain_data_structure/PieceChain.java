@@ -72,11 +72,12 @@ public class PieceChain {
         }
         
         // Inserting will involve splitting the current piece
-        Piece prevPiece, nextPiece, piece;
+        Piece nextPiece, piece;
         
         // Logical offset into the universal buffer is calculated as the
         // cumulative sum of the lengths of all pieces
         int currTextOffset = 0;
+        int oldLength;
         
         while ( sequenceIterator.hasNext() ){
             piece = sequenceIterator.next();
@@ -92,9 +93,10 @@ public class PieceChain {
             else if ( textOffset < currTextOffset ){
                 // The text to be inserted is in the middle of the 
                 // current piece
+                oldLength = piece.getLength();
                 piece.setLength(textOffset - ( currTextOffset - piece.getLength() ));
                 nextPiece = new Piece(piece.getOffset() + piece.getLength()
-                        , piece.getLength() - piece.getLength());
+                        , oldLength - piece.getLength());
                 sequenceIterator.add(newPiece);
                 sequenceIterator.add(nextPiece);
                 break;
