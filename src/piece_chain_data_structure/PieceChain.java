@@ -128,7 +128,7 @@ public class PieceChain {
         }
         
         // Deleting may involve splitting the current piece
-        Piece prevPiece, nextPiece, piece;
+        Piece nextPiece, piece;
         
         int currTextOffset = 0;
         int oldLength;
@@ -239,6 +239,124 @@ public class PieceChain {
             }
         }
         
+    }
+    
+    /**
+     * 
+     * @param textOffset offset into the logical buffer
+     * @param length length of text to be extracted
+     * @return ArrayList of Characters containing the required sequence
+     */
+    public ArrayList sequenceAt(int textOffset, int length){
+        ArrayList<Character> result = new ArrayList<>();
+        
+        // Find the piece(s) that contains the offset provided
+        // Traverse the linked list
+        ListIterator<Piece> sequenceIterator = sequence.listIterator();
+        
+        // Check if the piece chain is empty or if delete length is less than 0
+        if ( ! sequenceIterator.hasNext() || length <= 0 ){
+            return result;
+        }
+        
+        // Keep track of the current piece
+        Piece piece;
+        
+        int currTextOffset = 0;
+        
+        while ( sequenceIterator.hasNext() ){
+            piece = sequenceIterator.next();
+            currTextOffset += piece.getLength();
+            
+            if ( textOffset == (currTextOffset - piece.getLength()) ){
+                // The text to be extracted starts from the beginning of the 
+                // current piece
+                
+                // See if it stops in this piece itself
+                if ( ( textOffset + length ) > currTextOffset ){    // 
+                    // The sequence does not stops in this piece
+                    result.addAll(buffer.subList(piece.getOffset(), 
+                            piece.getOffset() + piece.getLength()));
+                }
+                else if( ( textOffset + length ) == currTextOffset ){   // 
+                    // The sequence stops at the end of this piece
+                    result.addAll(buffer.subList(piece.getOffset(), 
+                            piece.getOffset() + piece.getLength()));
+                    // End of sequence, break for more efficiency
+                    break;
+                }
+                else{   // 
+                    // The sequence stops at the middle of this piece
+                    result.addAll(buffer.subList(piece.getOffset(), 
+                            piece.getOffset() + (textOffset + length) 
+                                    - (currTextOffset - piece.getLength())));
+                    // End of sequence, break for more efficiency
+                    break;
+                }
+            }
+            else if ( textOffset > (currTextOffset - piece.getLength()) &&
+                    textOffset < currTextOffset ){
+                // The text to be extracted starts from the middle of the 
+                // current piece
+                
+                // See if it stops in this piece itself
+                if ( ( textOffset + length ) > currTextOffset ){    // 
+                    // The sequence does not stops in this piece
+                    // So it can be deleted
+                    result.addAll(buffer.subList(piece.getOffset() + 
+                            (textOffset - (currTextOffset - piece.getLength()) )
+                            , piece.getOffset() + 
+                            (textOffset - (currTextOffset - piece.getLength()) ) 
+                                    + currTextOffset - textOffset));
+                }
+                else if( ( textOffset + length ) == currTextOffset ){   // 
+                    // The sequence stops at the end of this piece
+                    result.addAll(buffer.subList(piece.getOffset() + 
+                            (textOffset - (currTextOffset - piece.getLength()) )
+                            , piece.getOffset() + 
+                            (textOffset - (currTextOffset - piece.getLength()) )
+                                    + length));
+                    // End of sequence, break for more efficiency
+                    break;
+                }
+                else{   // 
+                    // The sequence stops at the middle of this piece
+                    result.addAll(buffer.subList(piece.getOffset() + 
+                            (textOffset - (currTextOffset - piece.getLength()) )
+                            , piece.getOffset() + 
+                            (textOffset - (currTextOffset - piece.getLength()) )
+                                    + length));
+                    // End of sequence, break for more efficiency
+                    break;
+                }
+            }
+            else if( (currTextOffset - piece.getLength()) > textOffset
+                    && currTextOffset < ( textOffset + length )){
+                // The current piece is between start and stop of the sequence
+                result.addAll(buffer.subList(piece.getOffset(), 
+                        piece.getOffset() + piece.getLength()));
+            }
+            else if ( (currTextOffset - piece.getLength()) > textOffset
+                    && currTextOffset > ( textOffset + length ) ){
+                // The sequence stops in the middle of the 
+                // current piece
+                result.addAll(buffer.subList(piece.getOffset(), 
+                        piece.getOffset() + (textOffset + length) 
+                                - (currTextOffset - piece.getLength())));
+                // End of sequence, break for more efficiency
+                break;
+            }
+            else if ( (currTextOffset - piece.getLength()) > textOffset
+                    && currTextOffset == ( textOffset + length ) ){
+                // The sequence stops at the end of the 
+                // current piece - Done
+                result.addAll(buffer.subList(piece.getOffset()
+                        , piece.getOffset() + piece.getLength()));
+                // End of sequence, break for more efficiency
+                break;
+            }
+        }
+        return result;
     }
     
     @Override

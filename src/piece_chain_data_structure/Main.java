@@ -16,7 +16,7 @@ public class Main {
      */
     public static void main(String[] args) {
         demonstrate();
-        //measurePerformance(30000);
+        measurePerformance(30000);
     }
     
     /**
@@ -86,6 +86,19 @@ public class Main {
         System.out.println(pc);
         
         System.out.println("\n\n");
+        
+        System.out.println("\n------------------Extraction------------------");
+        
+        System.out.println("\n");
+        
+        // Extraction when sequence starts at the beginning of a piece and
+        // stops at the middle of another piece
+        
+        off = 1;
+        len = 10;
+        System.out.println("Extracting from position " + off + " to position " + (off + len - 1));
+        System.out.println(pc.sequenceAt(off, len));
+        
     }
     
     /**
@@ -112,7 +125,7 @@ public class Main {
             pc.insert(i%size, text[i%size]);
         }
         endTime = System.currentTimeMillis();
-        System.out.println("\n" + number + " insertions into the piece chain "
+        System.out.println("\n" + number + " insertions into the PieceChain "
                 + "took " + (endTime-startTime) + " milliseconds");
         //System.out.println(pc);
         
@@ -140,7 +153,7 @@ public class Main {
             pc.delete(i%size, i%size);
         }
         endTime = System.currentTimeMillis();
-        System.out.println("\n" + number + " deletions from the piece chain "
+        System.out.println("\n" + number + " deletions from the PieceChain "
                 + "took " + (endTime-startTime) + " milliseconds");
         //System.out.println(pc);
         
