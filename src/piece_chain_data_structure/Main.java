@@ -16,7 +16,7 @@ public class Main {
      */
     public static void main(String[] args) {
         demonstrate();
-        measurePerformance(30000);
+        measurePerformance(5000);
     }
     
     /**
@@ -120,18 +120,18 @@ public class Main {
         System.out.println("\nInsertion Comparison");
         
         // Insert into the piece chain
-        startTime = System.currentTimeMillis();
+        startTime = System.nanoTime();
         for ( int i = 0 ; i < number ; i++ ){
             pc.insert(i%size, text[i%size]);
         }
-        endTime = System.currentTimeMillis();
+        endTime = System.nanoTime();
         System.out.println("\n" + number + " insertions into the PieceChain "
-                + "took " + (endTime-startTime) + " milliseconds");
+                + "took " + (endTime-startTime) + " nano seconds");
         //System.out.println(pc);
         
         
         // Insert into the ArrayList for a comparison
-        startTime = System.currentTimeMillis();
+        startTime = System.nanoTime();
         for ( int i = 0 ; i < number ; i++ ){
             int j = i%size ;
             for ( char c : text[i%size] ){
@@ -139,33 +139,33 @@ public class Main {
                 j++;
             }
         }
-        endTime = System.currentTimeMillis();
+        endTime = System.nanoTime();
         System.out.println("\n" + number + " insertions into the ArrayList "
-                + "took " + (endTime-startTime) + " milliseconds");
+                + "took " + (endTime-startTime) + " nano seconds");
         //System.out.println(sequence);
         
         // Deletion
         System.out.println("\n\nDeletion Comparison");
         
         // Delete from the piece chain
-        startTime = System.currentTimeMillis();
+        startTime = System.nanoTime();
         for ( int i = 0 ; i < number ; i++ ){
             pc.delete(i%size, i%size);
         }
-        endTime = System.currentTimeMillis();
+        endTime = System.nanoTime();
         System.out.println("\n" + number + " deletions from the PieceChain "
-                + "took " + (endTime-startTime) + " milliseconds");
+                + "took " + (endTime-startTime) + " nano seconds");
         //System.out.println(pc);
         
         
         // Delete from the ArrayList for a comparison
-        startTime = System.currentTimeMillis();
+        startTime = System.nanoTime();
         for ( int i = 0 ; i < number ; i++ ){
             sequence.remove(i%size);
         }
-        endTime = System.currentTimeMillis();
+        endTime = System.nanoTime();
         System.out.println("\n" + number + " deletions from the ArrayList "
-                + "took " + (endTime-startTime) + " milliseconds");
+                + "took " + (endTime-startTime) + " nano seconds");
         //System.out.println(sequence);
         
         System.out.println("\n");
